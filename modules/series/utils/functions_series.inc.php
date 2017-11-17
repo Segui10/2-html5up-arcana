@@ -1,5 +1,5 @@
 <?php
-function validate_user() {
+function validate_series($value) {
     $error = array();
     $valido = true;
     $filtro = array(
@@ -22,12 +22,22 @@ function validate_user() {
     );
 
 
-    $resultado = filter_input_array(INPUT_POST, $filtro);
+    $resultado = filter_var_array($value, $filtro);
 
     //no filter
+    $resultado['tipo'] = $value['tipo'];
+    $resultado['generop'] = $value['generop'];
+    $resultado['generos'] = $value['generos'];
+    $resultado['country'] = $value['country'];
+    $resultado['province'] = $value['province'];
+    $resultado['city'] = $value['city'];
 
     if ($resultado != null && $resultado) {
 
+        if (count($resultado['generos']) < 1 ){
+            $error['generos'] = "Select 1 generos or more";
+            $valid = false;
+        }
 
         if (!$resultado['titulo']) {
             $error['titulo'] = 'El titulo tiene que tener entre 2 y 20 letras';
@@ -44,14 +54,10 @@ function validate_user() {
             $valido = false;
         }
         if (!$resultado['date_reception']) {
-            if($_POST['date_reception'] == ""){
                 $error['date_reception'] = "this camp can't empty";
                 $valido = false;
-            }else{
-            $error['date_reception'] = 'error format date (mm/dd/yyyy)';
-            $valido = false;
             }
-          }
+
     } else {
         $valido = false;
     };
